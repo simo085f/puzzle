@@ -1,0 +1,8 @@
+#container {
+  display: grid;
+  border: 2px solid pink;
+}
+
+.piece {
+  outline: 0.5px solid pink;
+}
