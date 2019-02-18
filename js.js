@@ -36,9 +36,75 @@ function createDropZones() {
     for (let x = 0; x < numOfX; x++) {
       let piece = document.createElement("div");
       piece.style.height = container_height / numOfY + "px";
-      piece.textContent = `${x}${y}`;
-      piece.classList.add("piece");
+
+      piece.dataset.xyid = `id${x}${y}`;
+      piece.classList.add("dropzone");
       document.querySelector("#container").appendChild(piece);
     }
   }
+
+  for (let y = 0; y < numOfY; y++) {
+    for (let x = 0; x < numOfX; x++) {
+      let piece = document.createElement("div");
+      piece.style.width = container_width / numOfX + "px";
+      piece.style.height = container_height / numOfY + "px";
+      piece.style.backgroundImage = `url(${imageUrl})`;
+      piece.dataset.xyid = `id${x}${y}`;
+      piece.classList.add("piece");
+      piece.style.backgroundPosition = `${(x * container_width) /
+        numOfX}px ${(y * container_height) / numOfY}px`;
+
+      document.querySelector("#pieceContainer").appendChild(piece);
+    }
+  }
+  dragPieces();
+}
+
+document.querySelectorAll(".piece").draggable = "true";
+let dragged;
+
+function dragPieces() {
+  console.log("hej");
+  document.addEventListener("drag", function(event) {});
+
+  document.addEventListener("dragstart", function(event) {
+    // store a ref. on the dragged elem
+    dragged = event.target;
+    // make it half transparent
+    event.target.style.opacity = 0.5;
+  });
+  document.addEventListener("dragend", function(event) {
+    // reset the transparency
+    event.target.style.opacity = "";
+  });
+  /* events fired on the drop targets */
+  document.addEventListener("dragover", function(event) {
+    // prevent default to allow drop
+    event.preventDefault();
+  });
+
+  document.addEventListener("drop", function(event) {
+    // prevent default action (open as link for some elements)
+    event.preventDefault();
+    console.log("DROP", event.target.className);
+    // move dragged elem to the selected drop target
+    if (event.target.className == "dropzone") {
+      event.target.style.background = "";
+      dragged.parentNode.removeChild(dragged);
+      event.target.appendChild(dragged);
+      dragged.style.left = event.target.style.left;
+      dragged.style.top = event.target.style.top;
+    } else if (event.target.className == "theBody") {
+      // park the dragged elem somewhere on the body
+      dragged.style.left = event.pageX + "px";
+      dragged.style.top = event.pageY + "px";
+    }
+  });
+  randomPieces();
+}
+
+function randomPieces() {
+  document.querySelectorAll(".piece").forEach(piece => {
+    piece.style.left = `${Math.random() * 300 + 350}px`;
+  });
 }
